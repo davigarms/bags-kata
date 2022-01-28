@@ -14,7 +14,7 @@ namespace Bags
             'weapons': ['Axe', 'Dagger', 'Mace', 'Sword']
         }";
 
-        private static readonly List<string> AllItems;
+        private static readonly List<Item> AllItems = new ();
 
         static Items()
         {
@@ -25,19 +25,22 @@ namespace Bags
             var metalItems = jObject["metals"].ToObject<List<string>>().ToList();
             var weaponItems = jObject["weapons"].ToObject<List<string>>().ToList();
 
-            AllItems = clothItems
-                .Concat(herbItems)
-                .Concat(metalItems)
-                .Concat(weaponItems)
-                .ToList();
+            clothItems.ForEach(i => AllItems.Add(new Cloth(i)));
+            herbItems.ForEach(i => AllItems.Add(new Herb(i)));
+            metalItems.ForEach(i => AllItems.Add(new Metal(i)));
+            weaponItems.ForEach(i => AllItems.Add(new Weapon(i)));
         }
         
-        public static List<string> SpawnItems(int numberOfItems = 1)
+        public static List<Item> SpawnItems(int numberOfItems = 1)
         {
-            var spawnedItems = new List<string>();
-            
+            var spawnedItems = new List<Item>();
+
             for (var i = 0; i < numberOfItems; i++)
-                spawnedItems.Add("item");
+            {
+                var index = new Random().Next(0, AllItems.Count);
+                spawnedItems.Add(new Item());
+            }
+               
             
             return spawnedItems;
         }

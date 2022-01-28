@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Bags
 {
-    public class Bags
+   public class Bags
     {
-        public List<string> BackPack { get; init; } = new ();
-        public List<string> ExtraBag1 { get; init; } = new ();
-        public List<string> ExtraBag2 { get; init; } = new ();
-        public List<string> ExtraBag3 { get; init; } = new ();
-        public List<string> ExtraBag4 { get; init; } = new ();
+        public List<Item> BackPack { get; init; } = new ();
+        public List<Item> ExtraBag1 { get; init; } = new ();
+        public List<Item> ExtraBag2 { get; init; } = new ();
+        public List<Item> ExtraBag3 { get; init; } = new ();
+        public List<Item> ExtraBag4 { get; init; } = new ();
 
-        public Bags Add(string item)
+        public Bags Add(Item item)
         {
             if (BackPack.Count < 8) BackPack.Add(item);
             else 
@@ -25,7 +26,7 @@ namespace Bags
             return this;
         }
         
-        public Bags Add(IEnumerable<string> items)
+        public Bags Add(IEnumerable<Item> items)
         {
             foreach (var item in items)
             {

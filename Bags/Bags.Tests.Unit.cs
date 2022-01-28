@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using NUnit.Framework;
 
 namespace Bags
@@ -21,48 +22,64 @@ namespace Bags
             Assert.That(bag.BackPack.Contains(item[0]));
         }
         
-        [TestCase("item",  "item", "item, item")]
-        [TestCase("item, item, item, item, item, item, item, item", "item", "item, item, item, item, item, item, item, item")]
-        [TestCase("item, item, item, item, item, item, item", "item, item", "item, item, item, item, item, item, item, item")]
-        public void Should_add_items_in_the_backpack_while_the_number_of_items_is_less_than_8(string initialItems, string addedItems, string expectedItems)
+        // [TestCase("item",  "item", "item, item")]
+        // [TestCase("item, item, item, item, item, item, item, item", "item", "item, item, item, item, item, item, item, item")]
+        // [TestCase("item, item, item, item, item, item, item", "item, item", "item, item, item, item, item, item, item, item")]
+        // public void Should_add_items_in_the_backpack_while_the_number_of_items_is_less_than_8(string initialItems, string addedItems, string expectedItems)
+        // {
+        //     var initialList = initialItems.Split(", ").ToList();
+        //     var addedList = addedItems.Split(", ").ToList();
+        //     var backPack = expectedItems.Split(", ").ToList();
+        //     
+        //     var bag = new Bags();
+        //     bag.Add(initialList);
+        //     bag.Add(addedList);
+        //     
+        //     Assert.Multiple(() =>
+        //     {
+        //         Assert.That(bag.BackPack, Is.EqualTo(backPack));
+        //         Assert.That(bag.BackPack.Count <= 8);
+        //     });
+        // }
+
+        private static IEnumerable<object[]> LessThan8DataSource()
         {
-            var initialList = initialItems.Split(", ").ToList();
-            var addedList = addedItems.Split(", ").ToList();
-            var backPack = expectedItems.Split(", ").ToList();
-            
+            yield return new object[]
+            {
+                new List<Item> { new Cloth(), new Herb() },
+                new List<Item> { new Metal(), new Weapon() },
+                new Bags()
+                {
+                    BackPack = new List<Item> { new Cloth(), new Herb(), new Metal(), new Weapon() },
+                }
+            };
+        }
+
+        [TestCaseSource(nameof(GreaterThan8DataSource))]
+        public void Should_add_items_to_an_extra_bag_when_the_number_of_items_is_greater_than_8(List<Item> initialList, List<Item> addedList, Bags expectedBags)
+        {
             var bag = new Bags();
             bag.Add(initialList);
             bag.Add(addedList);
+            
             
             Assert.Multiple(() =>
             {
-                Assert.That(bag.BackPack, Is.EqualTo(backPack));
-                Assert.That(bag.BackPack.Count <= 8);
+                Assert.That(JsonSerializer.Serialize(bag.BackPack), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BackPack)));
+                Assert.That(JsonSerializer.Serialize(bag.ExtraBag1), Is.EqualTo(JsonSerializer.Serialize(expectedBags.ExtraBag1)));
             });
-        }
-        
-        
-        [TestCaseSource(nameof(GreaterThan8DataSource))]
-        public void Should_add_items_to_an_extra_bag_when_the_number_of_items_is_greater_than_8(List<string> initialList, List<string> addedList, Bags expectedBags)
-        {
-            var bag = new Bags();
-            bag.Add(initialList);
-            bag.Add(addedList);
-            
-            Assert.That(bag.BackPack, Is.EqualTo(expectedBags.BackPack));
-            Assert.That(bag.ExtraBag1, Is.EqualTo(expectedBags.ExtraBag1));
         }
 
         private static IEnumerable<object[]> GreaterThan8DataSource()
         {
             yield return new object[]
             {
-                Items.SpawnItems(6),
-                Items.SpawnItems(3),
+                new List<Item>{new Cloth(), new Herb(), new Weapon(), new Metal(), new Cloth(), new Herb()},
+                new List<Item>{new Metal(), new Weapon(), new Cloth()},
                 new Bags()
                 {
-                    BackPack = Items.SpawnItems(8),
-                    ExtraBag1 = Items.SpawnItems()
+                    BackPack = new List<Item>{ new Cloth(), new Herb(), new Weapon(), new Metal(), new Cloth(), new Herb(), new Metal(), new Weapon()},
+                    ExtraBag1 = new List<Item>{ new Cloth() },
                 }
             };
             yield return new object[]
@@ -88,7 +105,7 @@ namespace Bags
         }
         
         [TestCaseSource(nameof(GreaterThan4InAnExtraBagDataSource))]
-        public void Should_add_items_to_another_extra_bag_when_the_number_of_items_in_an_extra_bag_is_greater_than_4(List<string> initialList,  List<string> addedList, Bags expectedBags)
+        public void Should_add_items_to_another_extra_bag_when_the_number_of_items_in_an_extra_bag_is_greater_than_4(List<Item> initialList,  List<Item> addedList, Bags expectedBags)
         {
             var bag = new Bags();
             bag.Add(initialList);
@@ -114,7 +131,7 @@ namespace Bags
                 {
                     BackPack = Items.SpawnItems(8),
                     ExtraBag1 = Items.SpawnItems(4),
-                    ExtraBag2 = {"item", "item"},
+                    ExtraBag2 = Items.SpawnItems(2),
                 }
             };
             yield return new object[]
@@ -145,7 +162,7 @@ namespace Bags
         }
         
         [TestCaseSource(nameof(GreaterThan4InAnExtraBagDataSource))]
-        public void Should_add_an_item_until_all_bags_are_full_ignoring_additional_items(List<string> initialList,  List<string> addedList, Bags expectedBags)
+        public void Should_add_an_item_until_all_bags_are_full_ignoring_additional_items(List<Item> initialList,  List<Item> addedList, Bags expectedBags)
         {
             var bag = new Bags();
             bag.Add(initialList);
@@ -210,13 +227,13 @@ namespace Bags
         public void Should_organise_bags_according_their_categories_when_organising_spell_is_casted()
         {
             var bag = new Bags();
-            bag.Add(new List<string>{"Leather", "Iron", "Copper", "Marigold", "Wool", "Gold", "Silk", "Copper"});
-            bag.Add(new List<string>{"Copper", "Cherry Blossom"});
+            bag.Add(new List<Item>{new Cloth(), new Metal(), new Metal(), new Herb(), new Cloth(), new Metal(), new Cloth(), new Metal()});
+            bag.Add(new List<Item>{new Metal(), new Herb()});
             
             Assert.Multiple(() =>
             {
-                Assert.That(bag.BackPack, Is.EqualTo(new List<string> { "Cherry Blossom", "Iron", "Leather", "Marigold", "Silk", "Wool" }));
-                Assert.That(bag.ExtraBag1, Is.EqualTo(new List<string>{ "Copper", "Copper", "Copper", "Gold" }));
+                Assert.That(bag.BackPack, Is.EqualTo(new List<Item> { new Herb(), new Metal(), new Cloth(), new Herb(), new Cloth(), new Cloth() }));
+                Assert.That(bag.ExtraBag1, Is.EqualTo(new List<Item>{ new Metal(), new Metal(), new Metal(), new Metal() }));
             });
         }
     }

@@ -4,32 +4,34 @@ namespace Bags
 {
     public class Item
     {
-        private string _name;
+        public string Name { get; }
+        
+        public string Type { get; }
 
-
-        public Item(string name = "item")
+        public Item(string name = "item", string type = "item")
         {
-            _name = name;
+            Name = name;
+            Type = type;
         }
     }
     
     public class Cloth : Item
     {
-        public Cloth(string name = "cloth") : base(name){}
+        public Cloth(string name = "item", string type = "cloth") : base(name, type){}
     }
     
     public class Herb : Item
     {
-        public Herb(string name = "herb") : base(name){}
+        public Herb(string name = "item", string type = "herb") : base(name, type){}
     }
     
     public class Metal : Item
     {
-        public Metal(string name = "herb") : base(name){}
+        public Metal(string name = "item", string type = "metal") : base(name, type){}
     }
     
     public class Weapon : Item
     {
-        public Weapon(string name = "herb") : base(name){}
+        public Weapon(string name = "item", string type = "weapon") : base(name, type){}
     }
 }
