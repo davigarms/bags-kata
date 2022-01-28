@@ -205,6 +205,20 @@ namespace Bags
                 }
             };
         }
+        
+        [Test]
+        public void Should_organise_bags_according_their_categories_when_organising_spell_is_casted()
+        {
+            var bag = new Bags();
+            bag.Add(new List<string>{"Leather", "Iron", "Copper", "Marigold", "Wool", "Gold", "Silk", "Copper"});
+            bag.Add(new List<string>{"Copper", "Cherry Blossom"});
+            
+            Assert.Multiple(() =>
+            {
+                Assert.That(bag.BackPack, Is.EqualTo(new List<string> { "Cherry Blossom", "Iron", "Leather", "Marigold", "Silk", "Wool" }));
+                Assert.That(bag.ExtraBag1, Is.EqualTo(new List<string>{ "Copper", "Copper", "Copper", "Gold" }));
+            });
+        }
     }
 
 
