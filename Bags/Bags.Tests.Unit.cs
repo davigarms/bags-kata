@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -114,7 +113,7 @@ namespace Bags
                 {
                     BackPack = Items.SpawnItems(8),
                     ExtraBag1 = Items.SpawnItems(4),
-                    ExtraBag2 = {"item", "item"},
+                    ExtraBag2 = Items.SpawnItems(2),
                 }
             };
             yield return new object[]
@@ -160,52 +159,7 @@ namespace Bags
                 Assert.That(bag.BagWeapons, Is.EqualTo(expectedBags.BagWeapons));
             });
         }
-
-        private static IEnumerable<object[]> FullBagsDataSource()
-        {
-            yield return new object[]
-            {
-                Items.SpawnItems(24),
-                Items.SpawnItems(1),
-                new Bags
-                {
-                    BackPack = Items.SpawnItems(8),
-                    ExtraBag1 = Items.SpawnItems(4),
-                    ExtraBag2 = Items.SpawnItems(4),
-                    BagMetals = Items.SpawnItems(4),
-                    BagWeapons = Items.SpawnItems(4)
-                }
-            };
-            
-            yield return new object[]
-            {
-                Items.SpawnItems(20),
-                Items.SpawnItems(5),
-                new Bags
-                {
-                    BackPack = Items.SpawnItems(8),
-                    ExtraBag1 = Items.SpawnItems(4),
-                    ExtraBag2 = Items.SpawnItems(4),
-                    BagMetals = Items.SpawnItems(4),
-                    BagWeapons = Items.SpawnItems(4)
-                }
-            };
-            
-            yield return new object[]
-            {
-                Items.SpawnItems(15),
-                Items.SpawnItems(10),
-                new Bags
-                {
-                    BackPack = Items.SpawnItems(8),
-                    ExtraBag1 = Items.SpawnItems(4),
-                    ExtraBag2 = Items.SpawnItems(4),
-                    BagMetals = Items.SpawnItems(4),
-                    BagWeapons = Items.SpawnItems(4)
-                }
-            };
-        }
-        
+       
         [TestCaseSource(nameof(CategorisedItemsBagDataSource))]
         public void Should_organise_bags_according_their_categories_when_organising_spell_is_casted(List<string> initialList,  List<string> addedList, Bags expectedBags)
         {
@@ -247,14 +201,14 @@ namespace Bags
             
             yield return new object[]
             {
-                new List<string>{"Leather", "Iron", "Copper", "Marigold", "Wool", "Gold", "Silk", "Copper", "Gold", "Sword", "Linen"},
-                new List<string>{"Copper", "Cherry Blossom", "Silver", "Mace", "Axe", "Dagger", "Sword", "Rose", "Axe", "Seaweed"},
+                new List<string>{ "Leather", "Iron", "Copper", "Marigold", "Wool", "Gold", "Silk", "Copper", "Gold", "Sword", "Linen" },
+                new List<string>{ "Copper", "Cherry Blossom", "Silver", "Mace", "Axe", "Dagger", "Sword", "Rose", "Axe", "Seaweed" },
                 new Bags
                 {
                     BackPack = new List<string> { "Cherry Blossom", "Gold", "Iron", "Leather", "Linen", "Marigold", "Rose", "Seaweed" },
                     BagMetals = new List<string>{ "Copper", "Copper", "Copper", "Gold" },
                     ExtraBag1 = new List<string>{ "Silk", "Silver", "Sword", "Sword" },
-                    ExtraBag2 = new List<string>{ "Wool"}
+                    ExtraBag2 = new List<string>{ "Wool" }
                 }
             };
         }
