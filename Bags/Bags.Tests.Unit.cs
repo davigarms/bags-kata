@@ -20,35 +20,49 @@ namespace Bags
             Assert.That(bag.BackPack.Contains(item[0]));
         }
         
-        // [TestCase("item",  "item", "item, item")]
-        // [TestCase("item, item, item, item, item, item, item, item", "item", "item, item, item, item, item, item, item, item")]
-        // [TestCase("item, item, item, item, item, item, item", "item, item", "item, item, item, item, item, item, item, item")]
-        // public void Should_add_items_in_the_backpack_while_the_number_of_items_is_less_than_8(string initialItems, string addedItems, string expectedItems)
-        // {
-        //     var initialList = initialItems.Split(", ").ToList();
-        //     var addedList = addedItems.Split(", ").ToList();
-        //     var backPack = expectedItems.Split(", ").ToList();
-        //     
-        //     var bag = new Bags();
-        //     bag.Add(initialList);
-        //     bag.Add(addedList);
-        //     
-        //     Assert.Multiple(() =>
-        //     {
-        //         Assert.That(bag.BackPack, Is.EqualTo(backPack));
-        //         Assert.That(bag.BackPack.Count <= 8);
-        //     });
-        // }
+        [TestCaseSource(nameof(LessThan8DataSource))]
+        public void Should_add_items_in_the_backpack_while_the_number_of_items_is_less_than_8(List<Item> initialList, List<Item> addedList, Bags expectedBags)
+        {
+            var bag = new Bags();
+            bag.Add(initialList);
+            bag.Add(addedList);
+            
+            Assert.Multiple(() =>
+            {
+                Assert.That(JsonSerializer.Serialize(bag.BackPack), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BackPack)));
+                Assert.That(bag.BackPack.Count <= 8);
+            });
+        }
 
         private static IEnumerable<object[]> LessThan8DataSource()
         {
             yield return new object[]
             {
-                new List<Item> { new Cloth(), new Herb() },
-                new List<Item> { new Metal(), new Weapon() },
+                Items.SpawnItems(),
+                Items.SpawnItems(3),
                 new Bags()
                 {
-                    BackPack = new List<Item> { new Cloth(), new Herb(), new Metal(), new Weapon() },
+                    BackPack = Items.SpawnItems(4)
+                }
+            };
+            
+            yield return new object[]
+            {
+                Items.SpawnItems(8),
+                Items.SpawnItems(),
+                new Bags()
+                {
+                    BackPack = Items.SpawnItems(8)
+                }
+            };
+            
+            yield return new object[]
+            {
+                Items.SpawnItems(7),
+                Items.SpawnItems(2),
+                new Bags()
+                {
+                    BackPack = Items.SpawnItems(8)
                 }
             };
         }
