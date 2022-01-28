@@ -20,10 +20,10 @@ namespace Bags
         {
             var jObject = JObject.Parse(ItemsData);
             
-            var clothItems = jObject["clothes"].ToObject<List<string>>().ToList();
-            var herbItems = jObject["herbs"].ToObject<List<string>>().ToList();
-            var metalItems = jObject["metals"].ToObject<List<string>>().ToList();
-            var weaponItems = jObject["weapons"].ToObject<List<string>>().ToList();
+            var clothItems = jObject["clothes"].ToObject<List<string>>();
+            var herbItems = jObject["herbs"].ToObject<List<string>>();
+            var metalItems = jObject["metals"].ToObject<List<string>>();
+            var weaponItems = jObject["weapons"].ToObject<List<string>>();
 
             clothItems.ForEach(i => AllItems.Add(new Cloth(i)));
             herbItems.ForEach(i => AllItems.Add(new Herb(i)));
@@ -40,7 +40,6 @@ namespace Bags
                 var index = new Random().Next(0, AllItems.Count);
                 spawnedItems.Add(new Item());
             }
-               
             
             return spawnedItems;
         }

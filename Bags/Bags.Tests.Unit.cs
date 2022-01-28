@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using NUnit.Framework;
 
@@ -74,12 +72,12 @@ namespace Bags
         {
             yield return new object[]
             {
-                new List<Item>{new Cloth(), new Herb(), new Weapon(), new Metal(), new Cloth(), new Herb()},
-                new List<Item>{new Metal(), new Weapon(), new Cloth()},
+                Items.SpawnItems(6),
+                Items.SpawnItems(3),
                 new Bags()
                 {
-                    BackPack = new List<Item>{ new Cloth(), new Herb(), new Weapon(), new Metal(), new Cloth(), new Herb(), new Metal(), new Weapon()},
-                    ExtraBag1 = new List<Item>{ new Cloth() },
+                    BackPack = Items.SpawnItems(8),
+                    ExtraBag1 = Items.SpawnItems(),
                 }
             };
             yield return new object[]
@@ -113,11 +111,11 @@ namespace Bags
             
             Assert.Multiple(() =>
             {
-                Assert.That(bag.BackPack, Is.EqualTo(expectedBags.BackPack));
-                Assert.That(bag.ExtraBag1, Is.EqualTo(expectedBags.ExtraBag1));
-                Assert.That(bag.ExtraBag2, Is.EqualTo(expectedBags.ExtraBag2));
-                Assert.That(bag.ExtraBag3, Is.EqualTo(expectedBags.ExtraBag3));
-                Assert.That(bag.ExtraBag4, Is.EqualTo(expectedBags.ExtraBag4));
+                Assert.That(JsonSerializer.Serialize(bag.BackPack), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BackPack)));
+                Assert.That(JsonSerializer.Serialize(bag.ExtraBag1), Is.EqualTo(JsonSerializer.Serialize(expectedBags.ExtraBag1)));
+                Assert.That(JsonSerializer.Serialize(bag.ExtraBag2), Is.EqualTo(JsonSerializer.Serialize(expectedBags.ExtraBag2)));
+                Assert.That(JsonSerializer.Serialize(bag.BagMetals), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BagMetals)));
+                Assert.That(JsonSerializer.Serialize(bag.BagWeapons), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BagWeapons)));
             });
         }
         
@@ -143,7 +141,7 @@ namespace Bags
                     BackPack = Items.SpawnItems(8),
                     ExtraBag1 = Items.SpawnItems(4),
                     ExtraBag2 = Items.SpawnItems(4),
-                    ExtraBag3 = Items.SpawnItems()
+                    BagMetals = Items.SpawnItems()
                 }
             };
             yield return new object[]
@@ -155,8 +153,8 @@ namespace Bags
                     BackPack = Items.SpawnItems(8),
                     ExtraBag1 = Items.SpawnItems(4),
                     ExtraBag2 = Items.SpawnItems(4),
-                    ExtraBag3 = Items.SpawnItems(4),
-                    ExtraBag4 = Items.SpawnItems()
+                    BagMetals = Items.SpawnItems(4),
+                    BagWeapons = Items.SpawnItems()
                 }
             };
         }
@@ -170,71 +168,69 @@ namespace Bags
             
             Assert.Multiple(() =>
             {
-                Assert.That(bag.BackPack, Is.EqualTo(expectedBags.BackPack));
-                Assert.That(bag.ExtraBag1, Is.EqualTo(expectedBags.ExtraBag1));
-                Assert.That(bag.ExtraBag2, Is.EqualTo(expectedBags.ExtraBag2));
-                Assert.That(bag.ExtraBag3, Is.EqualTo(expectedBags.ExtraBag3));
-                Assert.That(bag.ExtraBag4, Is.EqualTo(expectedBags.ExtraBag4));
+                Assert.That(JsonSerializer.Serialize(bag.BackPack), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BackPack)));
+                Assert.That(JsonSerializer.Serialize(bag.ExtraBag1), Is.EqualTo(JsonSerializer.Serialize(expectedBags.ExtraBag1)));
+                Assert.That(JsonSerializer.Serialize(bag.ExtraBag2), Is.EqualTo(JsonSerializer.Serialize(expectedBags.ExtraBag2)));
+                Assert.That(JsonSerializer.Serialize(bag.BagMetals), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BagMetals)));
+                Assert.That(JsonSerializer.Serialize(bag.BagWeapons), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BagWeapons)));
             });
         }
-
-        private static IEnumerable<object[]> FullBagsDataSource()
-        {
-            yield return new object[]
-            {
-                Items.SpawnItems(24),
-                Items.SpawnItems(1),
-                new Bags
-                {
-                    BackPack = Items.SpawnItems(8),
-                    ExtraBag1 = Items.SpawnItems(4),
-                    ExtraBag2 = Items.SpawnItems(4),
-                    ExtraBag3 = Items.SpawnItems(4),
-                    ExtraBag4 = Items.SpawnItems(4)
-                }
-            };
-            
-            yield return new object[]
-            {
-                Items.SpawnItems(20),
-                Items.SpawnItems(5),
-                new Bags
-                {
-                    BackPack = Items.SpawnItems(8),
-                    ExtraBag1 = Items.SpawnItems(4),
-                    ExtraBag2 = Items.SpawnItems(4),
-                    ExtraBag3 = Items.SpawnItems(4),
-                    ExtraBag4 = Items.SpawnItems(4)
-                }
-            };
-            
-            yield return new object[]
-            {
-                Items.SpawnItems(15),
-                Items.SpawnItems(10),
-                new Bags
-                {
-                    BackPack = Items.SpawnItems(8),
-                    ExtraBag1 = Items.SpawnItems(4),
-                    ExtraBag2 = Items.SpawnItems(4),
-                    ExtraBag3 = Items.SpawnItems(4),
-                    ExtraBag4 = Items.SpawnItems(4)
-                }
-            };
-        }
-        
+       
         [Test]
-        public void Should_organise_bags_according_their_categories_when_organising_spell_is_casted()
+        [TestCaseSource(nameof(CategorisedItemsBagDataSource))]
+        public void Should_organise_bags_according_their_categories_when_organising_spell_is_casted(List<Item> initialList,  List<Item> addedList, Bags expectedBags)
         {
             var bag = new Bags();
-            bag.Add(new List<Item>{new Cloth(), new Metal(), new Metal(), new Herb(), new Cloth(), new Metal(), new Cloth(), new Metal()});
-            bag.Add(new List<Item>{new Metal(), new Herb()});
+            bag.Add(initialList);
+            bag.Add(addedList);
+            bag.CastOrganisingSpell();
             
             Assert.Multiple(() =>
             {
-                Assert.That(bag.BackPack, Is.EqualTo(new List<Item> { new Herb(), new Metal(), new Cloth(), new Herb(), new Cloth(), new Cloth() }));
-                Assert.That(bag.ExtraBag1, Is.EqualTo(new List<Item>{ new Metal(), new Metal(), new Metal(), new Metal() }));
+                Assert.That(JsonSerializer.Serialize(bag.BackPack), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BackPack)));
+                Assert.That(JsonSerializer.Serialize(bag.BagMetals), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BagMetals)));
             });
+        }
+        
+        private static IEnumerable<object[]> CategorisedItemsBagDataSource()
+        {
+            yield return new object[]
+            {
+                new List<Item>{
+                    new Cloth("Leather"), 
+                    new Metal("Iron"), 
+                    new Metal("Copper"), 
+                    new Herb("Marigold"), 
+                    new Cloth("Wool"), 
+                    new Metal("Gold"), 
+                    new Cloth("Silk"), 
+                    new Metal("Copper")
+                },
+                new List<Item>
+                {
+                    new Metal("Copper"), 
+                    new Herb("Cherry Blossom")
+                },
+                new Bags
+                {
+                    BackPack = new List<Item>
+                    {
+                        new Herb("Cherry Blossom"),
+                        new Metal("Iron"), 
+                        new Cloth("Leather"), 
+                        new Herb("Marigold"), 
+                        new Cloth("Silk"),
+                        new Cloth("Wool")
+                    },
+                    BagMetals = new List<Item>
+                    {
+                        new Metal("Copper"),
+                        new Metal("Copper"),
+                        new Metal("Copper"),
+                        new Metal("Gold")
+                    }
+                }
+            };
         }
     }
 
