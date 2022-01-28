@@ -206,19 +206,57 @@ namespace Bags
             };
         }
         
-        [Test]
-        public void Should_organise_bags_according_their_categories_when_organising_spell_is_casted()
+        [TestCaseSource(nameof(CategorisedItemsBagDataSource))]
+        public void Should_organise_bags_according_their_categories_when_organising_spell_is_casted(List<string> initialList,  List<string> addedList, Bags expectedBags)
         {
             var bag = new Bags();
-            bag.Add(new List<string>{"Leather", "Iron", "Copper", "Marigold", "Wool", "Gold", "Silk", "Copper"});
-            bag.Add(new List<string>{"Copper", "Cherry Blossom"});
-            bag.OrganisingSpell();
+            bag.Add(initialList);
+            bag.Add(addedList);
+            bag.CastOrganisingSpell();
             
             Assert.Multiple(() =>
             {
-                Assert.That(bag.BackPack, Is.EqualTo(new List<string> { "Cherry Blossom", "Iron", "Leather", "Marigold", "Silk", "Wool" }));
-                Assert.That(bag.BagMetals, Is.EqualTo(new List<string>{ "Copper", "Copper", "Copper", "Gold" }));
+                Assert.That(bag.BackPack, Is.EqualTo(expectedBags.BackPack));
+                Assert.That(bag.BagMetals, Is.EqualTo(expectedBags.BagMetals));
             });
+        }
+
+        private static IEnumerable<object[]> CategorisedItemsBagDataSource()
+        {
+            yield return new object[]
+            {
+                new List<string>{"Leather", "Iron", "Copper", "Marigold", "Wool", "Gold", "Silk", "Copper"},
+                new List<string>{"Copper", "Cherry Blossom"},
+                new Bags
+                {
+                    BackPack = new List<string> { "Cherry Blossom", "Iron", "Leather", "Marigold", "Silk", "Wool" },
+                    BagMetals = new List<string>{ "Copper", "Copper", "Copper", "Gold" }
+                }
+            };
+            
+            yield return new object[]
+            {
+                new List<string>{"Leather", "Iron", "Copper", "Marigold", "Wool", "Gold", "Silk", "Copper", "Gold", "Sword"},
+                new List<string>{"Copper", "Cherry Blossom", "Silver", "Mace"},
+                new Bags
+                {
+                    BackPack = new List<string> { "Cherry Blossom", "Gold", "Iron", "Leather", "Marigold", "Silk", "Silver", "Wool" },
+                    BagMetals = new List<string>{ "Copper", "Copper", "Copper", "Gold" }
+                }
+            };
+            
+            yield return new object[]
+            {
+                new List<string>{"Leather", "Iron", "Copper", "Marigold", "Wool", "Gold", "Silk", "Copper", "Gold", "Sword", "Linen"},
+                new List<string>{"Copper", "Cherry Blossom", "Silver", "Mace", "Axe", "Dagger", "Sword", "Rose", "Axe", "Seaweed"},
+                new Bags
+                {
+                    BackPack = new List<string> { "Cherry Blossom", "Gold", "Iron", "Leather", "Linen", "Marigold", "Rose", "Seaweed" },
+                    BagMetals = new List<string>{ "Copper", "Copper", "Copper", "Gold" },
+                    ExtraBag1 = new List<string>{ "Silk", "Silver", "Sword", "Sword" },
+                    ExtraBag2 = new List<string>{ "Wool"}
+                }
+            };
         }
     }
 
