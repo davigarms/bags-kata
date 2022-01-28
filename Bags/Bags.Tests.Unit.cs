@@ -143,6 +143,68 @@ namespace Bags
                 }
             };
         }
+        
+        [TestCaseSource(nameof(GreaterThan4InAnExtraBagDataSource))]
+        public void Should_add_an_item_until_all_bags_are_full_ignoring_additional_items(List<string> initialList,  List<string> addedList, Bags expectedBags)
+        {
+            var bag = new Bags();
+            bag.Add(initialList);
+            bag.Add(addedList);
+            
+            Assert.Multiple(() =>
+            {
+                Assert.That(bag.BackPack, Is.EqualTo(expectedBags.BackPack));
+                Assert.That(bag.ExtraBag1, Is.EqualTo(expectedBags.ExtraBag1));
+                Assert.That(bag.ExtraBag2, Is.EqualTo(expectedBags.ExtraBag2));
+                Assert.That(bag.ExtraBag3, Is.EqualTo(expectedBags.ExtraBag3));
+                Assert.That(bag.ExtraBag4, Is.EqualTo(expectedBags.ExtraBag4));
+            });
+        }
+
+        private static IEnumerable<object[]> FullBagsDataSource()
+        {
+            yield return new object[]
+            {
+                Items.SpawnItems(24),
+                Items.SpawnItems(1),
+                new Bags
+                {
+                    BackPack = Items.SpawnItems(8),
+                    ExtraBag1 = Items.SpawnItems(4),
+                    ExtraBag2 = Items.SpawnItems(4),
+                    ExtraBag3 = Items.SpawnItems(4),
+                    ExtraBag4 = Items.SpawnItems(4)
+                }
+            };
+            
+            yield return new object[]
+            {
+                Items.SpawnItems(20),
+                Items.SpawnItems(5),
+                new Bags
+                {
+                    BackPack = Items.SpawnItems(8),
+                    ExtraBag1 = Items.SpawnItems(4),
+                    ExtraBag2 = Items.SpawnItems(4),
+                    ExtraBag3 = Items.SpawnItems(4),
+                    ExtraBag4 = Items.SpawnItems(4)
+                }
+            };
+            
+            yield return new object[]
+            {
+                Items.SpawnItems(15),
+                Items.SpawnItems(10),
+                new Bags
+                {
+                    BackPack = Items.SpawnItems(8),
+                    ExtraBag1 = Items.SpawnItems(4),
+                    ExtraBag2 = Items.SpawnItems(4),
+                    ExtraBag3 = Items.SpawnItems(4),
+                    ExtraBag4 = Items.SpawnItems(4)
+                }
+            };
+        }
     }
 
 
