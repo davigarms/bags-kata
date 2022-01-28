@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Bags
 {
     public class Bags
     {
-        public List<string> BackPack { get; init; } = new ();
-        public List<string> ExtraBag1 { get; init; } = new ();
-        public List<string> ExtraBag2 { get; init; } = new ();
-        public List<string> ExtraBag3 { get; init; } = new ();
-        public List<string> ExtraBag4 { get; init; } = new ();
+        public List<string> BackPack { get; set; } = new ();
+        public List<string> ExtraBag1 { get; set; } = new ();
+        public List<string> ExtraBag2 { get; set; } = new ();
+        public List<string> BagMetals { get; set; } = new ();
+        public List<string> BagWeapons { get; set; } = new ();
 
         public Bags Add(string item)
         {
@@ -18,9 +19,9 @@ namespace Bags
             else 
             if (ExtraBag2.Count < 4) ExtraBag2.Add(item);
             else 
-            if (ExtraBag3.Count < 4) ExtraBag3.Add(item);
+            if (BagMetals.Count < 4) BagMetals.Add(item);
             else 
-            if (ExtraBag4.Count < 4) ExtraBag4.Add(item);
+            if (BagWeapons.Count < 4) BagWeapons.Add(item);
             
             return this;
         }
@@ -35,12 +36,42 @@ namespace Bags
                 else 
                 if (ExtraBag2.Count < 4) ExtraBag2.Add(item);
                 else 
-                if (ExtraBag3.Count < 4) ExtraBag3.Add(item);
+                if (BagMetals.Count < 4) BagMetals.Add(item);
                 else 
-                if (ExtraBag4.Count < 4) ExtraBag4.Add(item);
+                if (BagWeapons.Count < 4) BagWeapons.Add(item);
             }
             
             return this;
+        }
+
+        public void OrganisingSpell()
+        {
+            var allItems = BackPack
+                .Concat(ExtraBag1)
+                .Concat(ExtraBag2)
+                .Concat(BagMetals)
+                .Concat(BagWeapons)
+                .OrderBy(i => i)
+                .ToList();
+            
+            BackPack = new List<string>();
+            ExtraBag1 = new List<string>();
+            ExtraBag2 = new List<string>();
+            BagMetals = new List<string>();
+            BagWeapons = new List<string>();
+            
+            foreach (var item in allItems)
+            {
+                if (Items.MetalItems.Contains(item) && BagMetals.Count < 4) BagMetals.Add(item);
+                else
+                if (Items.WeaponItems.Contains(item) && BagWeapons.Count < 4) BagWeapons.Add(item);
+                else
+                if (BackPack.Count < 8) BackPack.Add(item);
+                else
+                if (ExtraBag1.Count < 8) ExtraBag1.Add(item);
+                else
+                if (ExtraBag2.Count < 8) ExtraBag2.Add(item);
+            };
         }
     }
 }

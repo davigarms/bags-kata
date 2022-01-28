@@ -13,23 +13,20 @@ namespace Bags
             'metals': ['Copper', 'Gold', 'Iron', 'Silver'],
             'weapons': ['Axe', 'Dagger', 'Mace', 'Sword']
         }";
-
-        private static readonly List<string> AllItems;
+        
+        public static List<string> ClothItems {get; }
+        public static List<string> HerbItems {get; }
+        public static List<string> MetalItems {get; }
+        public static List<string> WeaponItems {get; }
 
         static Items()
         {
             var jObject = JObject.Parse(ItemsData);
             
-            var clothItems = jObject["clothes"].ToObject<List<string>>().ToList();
-            var herbItems = jObject["herbs"].ToObject<List<string>>().ToList();
-            var metalItems = jObject["metals"].ToObject<List<string>>().ToList();
-            var weaponItems = jObject["weapons"].ToObject<List<string>>().ToList();
-
-            AllItems = clothItems
-                .Concat(herbItems)
-                .Concat(metalItems)
-                .Concat(weaponItems)
-                .ToList();
+            ClothItems = jObject["clothes"].ToObject<List<string>>();
+            HerbItems = jObject["herbs"].ToObject<List<string>>();
+            MetalItems = jObject["metals"].ToObject<List<string>>();
+            WeaponItems = jObject["weapons"].ToObject<List<string>>();
         }
         
         public static List<string> SpawnItems(int numberOfItems = 1)

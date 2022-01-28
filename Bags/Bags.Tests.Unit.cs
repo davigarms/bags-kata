@@ -99,8 +99,8 @@ namespace Bags
                 Assert.That(bag.BackPack, Is.EqualTo(expectedBags.BackPack));
                 Assert.That(bag.ExtraBag1, Is.EqualTo(expectedBags.ExtraBag1));
                 Assert.That(bag.ExtraBag2, Is.EqualTo(expectedBags.ExtraBag2));
-                Assert.That(bag.ExtraBag3, Is.EqualTo(expectedBags.ExtraBag3));
-                Assert.That(bag.ExtraBag4, Is.EqualTo(expectedBags.ExtraBag4));
+                Assert.That(bag.BagMetals, Is.EqualTo(expectedBags.BagMetals));
+                Assert.That(bag.BagWeapons, Is.EqualTo(expectedBags.BagWeapons));
             });
         }
         
@@ -126,7 +126,7 @@ namespace Bags
                     BackPack = Items.SpawnItems(8),
                     ExtraBag1 = Items.SpawnItems(4),
                     ExtraBag2 = Items.SpawnItems(4),
-                    ExtraBag3 = Items.SpawnItems()
+                    BagMetals = Items.SpawnItems()
                 }
             };
             yield return new object[]
@@ -138,8 +138,8 @@ namespace Bags
                     BackPack = Items.SpawnItems(8),
                     ExtraBag1 = Items.SpawnItems(4),
                     ExtraBag2 = Items.SpawnItems(4),
-                    ExtraBag3 = Items.SpawnItems(4),
-                    ExtraBag4 = Items.SpawnItems()
+                    BagMetals = Items.SpawnItems(4),
+                    BagWeapons = Items.SpawnItems()
                 }
             };
         }
@@ -156,8 +156,8 @@ namespace Bags
                 Assert.That(bag.BackPack, Is.EqualTo(expectedBags.BackPack));
                 Assert.That(bag.ExtraBag1, Is.EqualTo(expectedBags.ExtraBag1));
                 Assert.That(bag.ExtraBag2, Is.EqualTo(expectedBags.ExtraBag2));
-                Assert.That(bag.ExtraBag3, Is.EqualTo(expectedBags.ExtraBag3));
-                Assert.That(bag.ExtraBag4, Is.EqualTo(expectedBags.ExtraBag4));
+                Assert.That(bag.BagMetals, Is.EqualTo(expectedBags.BagMetals));
+                Assert.That(bag.BagWeapons, Is.EqualTo(expectedBags.BagWeapons));
             });
         }
 
@@ -172,8 +172,8 @@ namespace Bags
                     BackPack = Items.SpawnItems(8),
                     ExtraBag1 = Items.SpawnItems(4),
                     ExtraBag2 = Items.SpawnItems(4),
-                    ExtraBag3 = Items.SpawnItems(4),
-                    ExtraBag4 = Items.SpawnItems(4)
+                    BagMetals = Items.SpawnItems(4),
+                    BagWeapons = Items.SpawnItems(4)
                 }
             };
             
@@ -186,8 +186,8 @@ namespace Bags
                     BackPack = Items.SpawnItems(8),
                     ExtraBag1 = Items.SpawnItems(4),
                     ExtraBag2 = Items.SpawnItems(4),
-                    ExtraBag3 = Items.SpawnItems(4),
-                    ExtraBag4 = Items.SpawnItems(4)
+                    BagMetals = Items.SpawnItems(4),
+                    BagWeapons = Items.SpawnItems(4)
                 }
             };
             
@@ -200,8 +200,8 @@ namespace Bags
                     BackPack = Items.SpawnItems(8),
                     ExtraBag1 = Items.SpawnItems(4),
                     ExtraBag2 = Items.SpawnItems(4),
-                    ExtraBag3 = Items.SpawnItems(4),
-                    ExtraBag4 = Items.SpawnItems(4)
+                    BagMetals = Items.SpawnItems(4),
+                    BagWeapons = Items.SpawnItems(4)
                 }
             };
         }
@@ -212,11 +212,12 @@ namespace Bags
             var bag = new Bags();
             bag.Add(new List<string>{"Leather", "Iron", "Copper", "Marigold", "Wool", "Gold", "Silk", "Copper"});
             bag.Add(new List<string>{"Copper", "Cherry Blossom"});
+            bag.OrganisingSpell();
             
             Assert.Multiple(() =>
             {
                 Assert.That(bag.BackPack, Is.EqualTo(new List<string> { "Cherry Blossom", "Iron", "Leather", "Marigold", "Silk", "Wool" }));
-                Assert.That(bag.ExtraBag1, Is.EqualTo(new List<string>{ "Copper", "Copper", "Copper", "Gold" }));
+                Assert.That(bag.BagMetals, Is.EqualTo(new List<string>{ "Copper", "Copper", "Copper", "Gold" }));
             });
         }
     }
