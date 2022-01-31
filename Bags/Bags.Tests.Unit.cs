@@ -15,9 +15,9 @@ namespace Bags
         public void Should_add_an_item_in_the_backpack()
         {
             var bag = new Bags();
-            var item = Items.SpawnItems();
-            bag.Add(item[0]);
-            Assert.That(bag.BackPack.Contains(item[0]));
+            var item = new Item();
+            bag.Add(item);
+            Assert.That(bag.BackPack.Contains(item));
         }
         
         [TestCaseSource(nameof(LessThan8DataSource))]
@@ -29,8 +29,8 @@ namespace Bags
             
             Assert.Multiple(() =>
             {
-                Assert.That(JsonSerializer.Serialize(bag.BackPack), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BackPack)));
                 Assert.That(bag.BackPack.Count <= 8);
+                Assert.That(bag.BackPack.Count, Is.EqualTo(expectedBags.BackPack.Count));
             });
         }
 
@@ -48,7 +48,7 @@ namespace Bags
             
             yield return new object[]
             {
-                Items.SpawnItems(8),
+                Items.SpawnItems(7),
                 Items.SpawnItems(),
                 new Bags()
                 {
@@ -58,8 +58,8 @@ namespace Bags
             
             yield return new object[]
             {
-                Items.SpawnItems(7),
-                Items.SpawnItems(2),
+                Items.SpawnItems(6),
+                Items.SpawnItems(3),
                 new Bags()
                 {
                     BackPack = Items.SpawnItems(8)
@@ -77,8 +77,8 @@ namespace Bags
             
             Assert.Multiple(() =>
             {
-                Assert.That(JsonSerializer.Serialize(bag.BackPack), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BackPack)));
-                Assert.That(JsonSerializer.Serialize(bag.ExtraBag1), Is.EqualTo(JsonSerializer.Serialize(expectedBags.ExtraBag1)));
+                Assert.That(bag.BackPack.Count, Is.EqualTo(expectedBags.BackPack.Count));
+                Assert.That(bag.ExtraBag1.Count, Is.EqualTo(expectedBags.ExtraBag1.Count));
             });
         }
 
@@ -86,18 +86,18 @@ namespace Bags
         {
             yield return new object[]
             {
-                Items.SpawnItems(6),
+                Items.SpawnItems(7),
                 Items.SpawnItems(3),
                 new Bags()
                 {
                     BackPack = Items.SpawnItems(8),
-                    ExtraBag1 = Items.SpawnItems(),
+                    ExtraBag1 = Items.SpawnItems(2),
                 }
             };
             yield return new object[]
             {
-                Items.SpawnItems(8),
-                Items.SpawnItems(),
+                Items.SpawnItems(5),
+                Items.SpawnItems(4),
                 new Bags()
                 {
                     BackPack = Items.SpawnItems(8),
@@ -106,12 +106,12 @@ namespace Bags
             };
             yield return new object[]
             {
-                Items.SpawnItems(8),
-                Items.SpawnItems(3),
+                Items.SpawnItems(7),
+                Items.SpawnItems(6),
                 new Bags()
                 {
                     BackPack = Items.SpawnItems(8),
-                    ExtraBag1 = Items.SpawnItems(3)
+                    ExtraBag1 = Items.SpawnItems(4)
                 }
             };
         }
@@ -125,11 +125,11 @@ namespace Bags
             
             Assert.Multiple(() =>
             {
-                Assert.That(JsonSerializer.Serialize(bag.BackPack), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BackPack)));
-                Assert.That(JsonSerializer.Serialize(bag.ExtraBag1), Is.EqualTo(JsonSerializer.Serialize(expectedBags.ExtraBag1)));
-                Assert.That(JsonSerializer.Serialize(bag.ExtraBag2), Is.EqualTo(JsonSerializer.Serialize(expectedBags.ExtraBag2)));
-                Assert.That(JsonSerializer.Serialize(bag.BagMetals), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BagMetals)));
-                Assert.That(JsonSerializer.Serialize(bag.BagWeapons), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BagWeapons)));
+                Assert.That(bag.BackPack.Count, Is.EqualTo(expectedBags.BackPack.Count));
+                Assert.That(bag.ExtraBag1.Count, Is.EqualTo(expectedBags.ExtraBag1.Count));
+                Assert.That(bag.ExtraBag2.Count, Is.EqualTo(expectedBags.ExtraBag2.Count));
+                Assert.That(bag.BagMetals.Count, Is.EqualTo(expectedBags.BagMetals.Count));
+                Assert.That(bag.BagWeapons.Count, Is.EqualTo(expectedBags.BagWeapons.Count));
             });
         }
         
@@ -173,20 +173,20 @@ namespace Bags
             };
         }
         
-        [TestCaseSource(nameof(GreaterThan4InAnExtraBagDataSource))]
-        public void Should_add_an_item_until_all_bags_are_full_ignoring_additional_items(List<Item> initialList,  List<Item> addedList, Bags expectedBags)
+        [Test]
+        public void Should_add_an_item_until_all_bags_are_full_ignoring_additional_items()
         {
             var bag = new Bags();
-            bag.Add(initialList);
-            bag.Add(addedList);
+            bag.Add(Items.SpawnItems(23));
+            bag.Add(Items.SpawnItems(2));
             
             Assert.Multiple(() =>
             {
-                Assert.That(JsonSerializer.Serialize(bag.BackPack), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BackPack)));
-                Assert.That(JsonSerializer.Serialize(bag.ExtraBag1), Is.EqualTo(JsonSerializer.Serialize(expectedBags.ExtraBag1)));
-                Assert.That(JsonSerializer.Serialize(bag.ExtraBag2), Is.EqualTo(JsonSerializer.Serialize(expectedBags.ExtraBag2)));
-                Assert.That(JsonSerializer.Serialize(bag.BagMetals), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BagMetals)));
-                Assert.That(JsonSerializer.Serialize(bag.BagWeapons), Is.EqualTo(JsonSerializer.Serialize(expectedBags.BagWeapons)));
+                Assert.That(bag.BackPack.Count, Is.EqualTo(8));
+                Assert.That(bag.ExtraBag1.Count, Is.EqualTo(4));
+                Assert.That(bag.ExtraBag2.Count, Is.EqualTo(4));
+                Assert.That(bag.BagMetals.Count, Is.EqualTo(4));
+                Assert.That(bag.BagWeapons.Count, Is.EqualTo(4));
             });
         }
        
@@ -247,7 +247,4 @@ namespace Bags
             };
         }
     }
-
-
-    
 }

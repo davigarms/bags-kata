@@ -44,7 +44,7 @@ namespace Bags
             return this;
         }
         
-        public void CastOrganisingSpell()
+        public Bags CastOrganisingSpell()
         {
             var allItems = BackPack
                 .Concat(ExtraBag1)
@@ -72,6 +72,8 @@ namespace Bags
                 else
                 if (ExtraBag2.Count < 4) ExtraBag2.Add(item);
             };
+
+            return this;
         }
     }
 }
