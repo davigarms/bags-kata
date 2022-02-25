@@ -46,32 +46,39 @@ namespace Bags
 
         public void CastOrganisingSpell()
         {
-            var allItems = BackPack
+            var orderedItems = OrderItems();
+            ResetBags();
+            SortItems(orderedItems);
+        }
+
+        private void SortItems(List<string> allItems)
+        {
+            foreach (var item in allItems)
+            {
+                if (Items.MetalItems.Contains(item) && BagMetals.Count < 4) BagMetals.Add(item);
+                else if (Items.WeaponItems.Contains(item) && BagWeapons.Count < 4) BagWeapons.Add(item);
+                else if (BackPack.Count < 8) BackPack.Add(item);
+                else if (ExtraBag1.Count < 4) ExtraBag1.Add(item);
+                else if (ExtraBag2.Count < 4) ExtraBag2.Add(item);
+            }
+        }
+
+        private List<string> OrderItems() =>
+            BackPack
                 .Concat(ExtraBag1)
                 .Concat(ExtraBag2)
                 .Concat(BagMetals)
                 .Concat(BagWeapons)
                 .OrderBy(i => i)
                 .ToList();
-            
+
+        private void ResetBags()
+        {
             BackPack = new List<string>();
             ExtraBag1 = new List<string>();
             ExtraBag2 = new List<string>();
             BagMetals = new List<string>();
             BagWeapons = new List<string>();
-            
-            foreach (var item in allItems)
-            {
-                if (Items.MetalItems.Contains(item) && BagMetals.Count < 4) BagMetals.Add(item);
-                else
-                if (Items.WeaponItems.Contains(item) && BagWeapons.Count < 4) BagWeapons.Add(item);
-                else
-                if (BackPack.Count < 8) BackPack.Add(item);
-                else
-                if (ExtraBag1.Count < 4) ExtraBag1.Add(item);
-                else
-                if (ExtraBag2.Count < 4) ExtraBag2.Add(item);
-            };
         }
     }
 }
